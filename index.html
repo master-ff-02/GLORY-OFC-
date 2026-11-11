@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="theme-color" content="#07090f"/>
+<title>GUILD GLORY — MAS1ER OFFICIAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#07090f;--bg2:#0b0e17;--panel:rgba(15,18,30,.75);--raised:rgba(25,30,48,.8);--edge:rgba(255,255,255,.08);
+ --gold:#ffc83d;--gold2:#f5a623;--ember:#ff6b35;
+ --bone:#e2e8f0;--fog:#8b9bb4;
+ --mint:#00f0a0;--sky:#00d2ff;--rose:#ff4757;--violet:#b362ff;
+ 
+ --display:'Outfit',sans-serif;
+ --body:'Inter',sans-serif;
+ --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+ 
+ --r-sm:10px;--r-md:16px;--r-lg:24px;--r-xl:32px;
+ --shadow:0 12px 40px rgba(0,0,0,.6);
+ --glow-gold:0 0 30px rgba(255,200,61,.3);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;min-width:0;}
+html{scroll-behavior:smooth;scroll-padding-top:100px;color-scheme:dark;overflow-x:hidden;}
+body{
+ background-color:var(--bg);
+ background-image:
+  radial-gradient(circle at 15% 0%, rgba(255,200,61,.08) 0%, transparent 40%),
+  radial-gradient(circle at 85% 20%, rgba(255,107,53,.06) 0%, transparent 40%),
+  linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+ background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+ color:var(--bone);font:15px/1.6 var(--body);-webkit-font-smoothing:antialiased;
+ min-height:100vh;overflow-x:hidden;width:100%;max-width:100vw;
+}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--edge);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
+
+button,input,select{font:inherit;color:inherit;width:100%;max-width:100%;}
+button{border:0;cursor:pointer;background:none;width:auto;}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.ok{color:var(--mint)}.bad{color:var(--rose)}.warn{color:var(--ember)}.muted{color:var(--fog)}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes spinGlow{0%{filter:drop-shadow(0 0 15px rgba(255,200,61,.4))}50%{filter:drop-shadow(0 0 30px rgba(255,200,61,.7))}100%{filter:drop-shadow(0 0 15px rgba(255,200,61,.4))}}
+
+.animate-in{animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both}
+
+/* ═══ HEADER ═══ */
+.topbar{
+ position:sticky;top:0;z-index:50;
+ background:rgba(7,9,15,.85);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+ border-bottom:1px solid var(--edge);width:100%;
+}
+.topbar.scrolled{box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.topbar-in{max-width:1300px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;}
+
+/* Brand & Logo */
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;}
+.brand img{
+ width:38px;height:42px;flex:none;object-fit:contain;
+ animation:spinGlow 4s ease-in-out infinite;
+}
+.brand .text-box{display:flex;flex-direction:column;min-width:0;}
+.brand b{font:800 22px/1 var(--display);letter-spacing:.5px;background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.brand span{font-size:10px;color:var(--gold);margin-top:3px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* KPIs (Desktop only) */
+.hd-kpis{display:none;gap:20px;background:var(--bg2);padding:8px 20px;border-radius:var(--r-md);border:1px solid var(--edge)}
+.hd-kpi{line-height:1.2;text-align:center}
+.hd-kpi b{display:block;font:800 20px/1 var(--display);color:var(--gold)}
+.hd-kpi span{font-size:10px;color:var(--fog);letter-spacing:1px;text-transform:uppercase}
+
+.pill{border:1px solid var(--edge);background:var(--panel);padding:8px 14px;border-radius:99px;color:var(--fog);font-size:12px;font-weight:700;white-space:nowrap;transition:all .3s;flex:none;}
+.pill.on{color:#000;background:var(--mint);border-color:var(--mint);box-shadow:0 0 15px rgba(0,240,160,.4)}
+.pill.err{color:#fff;background:var(--rose);border-color:var(--rose);box-shadow:0 0 15px rgba(255,71,87,.4)}
+
+/* Nav (Mobile scrollable) */
+.nav-wrapper{width:100%;overflow-x:auto;margin-top:4px;padding-bottom:4px;}
+.nav-wrapper::-webkit-scrollbar{display:none}
+.nav{display:flex;gap:6px;background:var(--bg2);padding:4px;border-radius:99px;border:1px solid var(--edge);width:max-content;}
+.nav a{color:var(--fog);text-decoration:none;font-weight:600;font-size:13px;padding:8px 18px;border-radius:99px;transition:all .3s;white-space:nowrap;}
+.nav a:hover{color:var(--bone)}
+.nav a.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;box-shadow:var(--glow-gold)}
+
+/* ═══ MAIN LAYOUT ═══ */
+.main{max-width:1300px;margin:0 auto;padding:16px 16px 80px;display:grid;gap:16px;width:100%;}
+.two{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;width:100%;}
+
+/* ═══ PANELS ═══ */
+.panel{
+ background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+ border:1px solid var(--edge);border-radius:var(--r-lg);padding:20px;
+ position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:all .3s;width:100%;
+}
+.panel:hover{border-color:rgba(255,255,255,.15);box-shadow:var(--shadow)}
+.panel::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);pointer-events:none}
+.panel.gold{border-left:3px solid var(--gold)}
+.panel.violet{border-left:3px solid var(--violet)}
+.panel.sky{border-left:3px solid var(--sky)}
+.panel.fog{border-left:3px solid var(--fog)}
+
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px;flex-direction:column;}
+.ph h2{font:800 22px/1.2 var(--display);letter-spacing:.5px;color:#fff}
+.ph p{margin:4px 0 0;color:var(--fog);font-size:12px;line-height:1.5;}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--mint);text-transform:uppercase;letter-spacing:1px}
+.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint);animation:pulse 1.5s infinite}
+.empty{color:var(--fog);font-size:13px;padding:20px;text-align:center;border:1px dashed rgba(255,255,255,.1);border-radius:var(--r-md);background:rgba(0,0,0,.2);width:100%;}
+
+/* ═══ HERO SCOREBOARD ═══ */
+.hero{
+ background:linear-gradient(135deg,rgba(20,25,40,.9) 0%,rgba(10,12,20,.95) 100%);
+ border:1px solid rgba(255,200,61,.2);border-radius:var(--r-xl);
+ padding:24px 20px;position:relative;overflow:hidden;
+ box-shadow:0 20px 50px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);width:100%;
+}
+.hero::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at top right, rgba(255,200,61,.08), transparent 50%);pointer-events:none}
+.hero::after{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,transparent,var(--gold),var(--ember),var(--gold),transparent);background-size:200% 100%;animation:shimmer 3s linear infinite}
+
+.hero-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;position:relative;z-index:2;}
+.hero-guild{display:flex;align-items:center;gap:16px;min-width:0;flex:1;}
+.hero-guild img{
+ width:60px;height:68px;flex:none;object-fit:contain;
+ animation:float 4s ease-in-out infinite;
+}
+.hg-name{font:900 28px/1.1 var(--display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55vw;background:linear-gradient(180deg,#fff, #a0a5b5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.5px}
+.hg-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.badge{font:600 11px var(--body);padding:4px 10px;border-radius:99px;border:1px solid var(--edge);background:var(--bg);color:var(--bone);white-space:nowrap;}
+.badge.lv{color:var(--gold);border-color:rgba(255,200,61,.3);background:rgba(255,200,61,.1)}
+.badge.rg{color:var(--sky);border-color:rgba(0,210,255,.3);background:rgba(0,210,255,.1)}
+
+.hero-body{display:grid;grid-template-columns:1fr;gap:20px;align-items:end;margin-top:20px;position:relative;z-index:2;width:100%;}
+.score small{display:block;color:var(--fog);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px}
+.score strong{
+ display:block;font:900 clamp(48px,15vw,100px)/.9 var(--display);letter-spacing:-2px;margin-top:6px;
+ background:linear-gradient(180deg,#fff 0%,var(--gold) 50%,var(--ember) 100%);
+ -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+ filter:drop-shadow(0 5px 20px rgba(255,200,61,.3));
+}
+.score-sub{margin-top:10px;font:500 12px var(--body);color:var(--fog);display:flex;align-items:center;gap:6px}
+.score-sub::before{content:"●";color:var(--mint);font-size:10px}
+
+.gl-chips{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.gl-chip{background:rgba(0,0,0,.4);border:1px solid var(--edge);border-radius:var(--r-sm);padding:12px;position:relative;overflow:hidden;width:100%;}
+.gl-chip::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--fog);opacity:.2}
+.gl-chip:nth-child(1)::before{background:var(--mint);opacity:1}
+.gl-chip:nth-child(2)::before{background:var(--sky);opacity:1}
+.gl-chip:nth-child(3)::before{background:var(--gold);opacity:1}
+.gl-chip:nth-child(4)::before{background:var(--violet);opacity:1}
+.gl-chip small{display:block;color:var(--fog);font-size:10px;text-transform:uppercase;letter-spacing:.5px;}
+.gl-chip b{display:block;font:800 20px/1.2 var(--display);margin-top:4px}
+
+.gl-chart{margin-top:20px;background:rgba(0,0,0,.4);border:1px solid var(--edge);border-radius:var(--r-md);padding:12px;position:relative;z-index:2;width:100%;}
+#lgSpark{width:100%;height:120px;display:block}
+.gl-axis{display:flex;justify-content:space-between;font:500 10px var(--mono);color:var(--fog);margin-top:6px;text-transform:uppercase}
+
+.gl-top{margin-top:20px;position:relative;z-index:2;width:100%;}
+.mlist-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;}
+.mlist-head b{font:800 16px var(--display);letter-spacing:.5px}
+.mlist-head small{font:500 11px var(--body);color:var(--fog)}
+.gt-row{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;margin-top:10px;background:rgba(255,255,255,.02);padding:10px;border-radius:var(--r-sm);border:1px solid transparent;transition:all .2s;width:100%;}
+.gt-row:hover{background:rgba(255,255,255,.05);border-color:var(--edge)}
+.gt-rank{font:800 14px var(--display);color:var(--fog);text-align:center}
+.gt-row:nth-child(1) .gt-rank{color:var(--gold);font-size:18px}
+.gt-row:nth-child(2) .gt-rank{color:#c0c0c0;font-size:18px}
+.gt-row:nth-child(3) .gt-rank{color:#cd7f32;font-size:18px}
+.gt-name{font:600 13px var(--body);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.gt-bar{height:4px;border-radius:99px;background:rgba(255,255,255,.05);margin-top:6px;overflow:hidden;width:100%;}
+.gt-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--ember));border-radius:99px}
+.gt-val{font:800 16px var(--display);color:var(--gold)}
+
+/* ═══ CONTROL / INPUTS ═══ */
+.steps{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;}
+.steps li{position:relative;font:600 10px var(--body);color:var(--fog);text-align:center;padding-top:32px;line-height:1.2;}
+.steps li::before{content:attr(data-n);position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid var(--edge);font:800 11px var(--display);color:var(--fog);z-index:1;transition:all .3s}
+.steps li::after{content:"";position:absolute;top:12px;left:calc(50% + 15px);right:calc(-50% + 15px);height:2px;background:var(--edge);transition:background .3s}
+.steps li:last-child::after{display:none}
+.steps li.done{color:var(--bone)}
+.steps li.done::before{content:"✓";background:var(--mint);border-color:var(--mint);color:#000;box-shadow:0 0 10px rgba(0,240,160,.4)}
+.steps li.done::after{background:var(--mint)}
+.steps li.now{color:var(--gold)}
+.steps li.now::before{border-color:var(--gold);color:var(--gold);box-shadow:0 0 0 3px rgba(255,200,61,.15)}
+.steps li.err{color:var(--rose)}
+.steps li.err::before{border-color:var(--rose);color:var(--rose)}
+
+.fields{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px;width:100%;}
+.field label{display:block;font:600 11px var(--body);color:var(--fog);margin:0 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--edge);border-radius:var(--r-sm);padding:12px 14px;outline:none;transition:all .3s;color:#fff;font:500 14px var(--body)}
+.field input:focus,.field select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,200,61,.15);background:rgba(0,0,0,.5)}
+.field input::placeholder{color:#4a5568}
+
+.controls{display:grid;margin-top:12px;width:100%;}
+.check{display:flex;gap:10px;align-items:flex-start;background:rgba(0,0,0,.2);border:1px solid var(--edge);border-radius:var(--r-sm);padding:12px;font-size:12px;line-height:1.4;cursor:pointer;transition:all .2s;width:100%;}
+.check:hover{border-color:rgba(255,200,61,.3)}
+.check input{accent-color:var(--gold);width:16px;height:16px;flex:none;margin-top:2px}
+.check small{display:block;color:var(--fog);font-size:10px;margin-top:4px}
+
+#start{
+ width:100%;margin-top:16px;padding:16px;border-radius:var(--r-sm);
+ background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;
+ font:800 16px var(--display);letter-spacing:1px;text-transform:uppercase;
+ transition:all .3s;position:relative;overflow:hidden;box-shadow:0 8px 20px rgba(255,200,61,.2);
+}
+#start:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 25px rgba(255,200,61,.4)}
+#start:disabled{opacity:.5;filter:grayscale(1);cursor:not-allowed;box-shadow:none}
+
+.progress{margin-top:16px;width:100%;}
+.bar{height:10px;background:rgba(0,0,0,.5);border-radius:99px;overflow:hidden;border:1px solid var(--edge);padding:2px;width:100%;}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--ember));border-radius:99px;transition:width .4s ease}
+.stage{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font:600 12px var(--body);color:var(--bone)}
+.stage b{color:var(--gold)}
+
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px;width:100%;}
+.stat{background:rgba(255,255,255,.03);border:1px solid var(--edge);border-radius:var(--r-sm);padding:10px 12px;width:100%;}
+.stat span{display:block;font:600 10px var(--body);color:var(--fog);text-transform:uppercase;letter-spacing:.5px}
+.stat strong{display:block;font:800 18px var(--display);margin-top:2px;color:#fff}
+
+/* ═══ GUILD INFO ═══ */
+.ghead{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--edge);border-radius:var(--r-md);background:rgba(255,255,255,.02);width:100%;}
+.gicon{width:48px;height:48px;flex:none;border-radius:10px;display:grid;place-items:center;font-size:22px;background:rgba(0,0,0,.3);border:1px solid var(--edge);}
+.gicon img{width:100%;height:100%;object-fit:contain;border-radius:10px;}
+.gtitle{min-width:0;flex:1;}
+.gtitle small{font:600 10px var(--body);color:var(--fog);text-transform:uppercase;letter-spacing:1px}
+.gtitle b{display:block;font:800 20px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;color:#fff}
+
+.guild{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;width:100%;}
+.gbox{background:rgba(0,0,0,.3);border:1px solid var(--edge);border-radius:var(--r-sm);padding:10px 12px;width:100%;min-width:0;}
+.gbox small{font:600 10px var(--body);color:var(--fog);text-transform:uppercase;display:block;}
+.gbox b{display:block;font:700 14px var(--body);margin-top:2px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gid{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.copy{padding:4px 8px;font:700 10px var(--body);border-radius:4px;background:var(--raised);color:var(--gold);border:1px solid var(--edge);transition:all .2s;white-space:nowrap;}
+.copy:hover{background:var(--gold);color:#000}
+
+.mem{margin-top:12px;background:rgba(0,0,0,.3);border:1px solid var(--edge);border-radius:var(--r-md);padding:14px;width:100%;}
+.mem .row{display:flex;justify-content:space-between;font:600 11px var(--body);color:var(--fog)}
+.mem .row b{color:#fff}
+.mem .bar{margin-top:8px}
+.mem .fill{background:linear-gradient(90deg,var(--mint),var(--sky))}
+
+.extra{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;width:100%;}
+.extra .gbox b{font-size:12px}
+
+/* ═══ TILES (STATS ROW) ═══ */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.tile{background:var(--panel);border:1px solid var(--edge);border-radius:var(--r-md);padding:12px;position:relative;overflow:hidden;width:100%;}
+.tile::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;background:var(--fog);opacity:.3;transition:opacity .3s}
+.tile:hover::before{opacity:1;background:var(--gold)}
+.tile span{display:block;font:600 10px var(--body);color:var(--fog);text-transform:uppercase;letter-spacing:.5px}
+.tile strong{display:block;font:800 20px var(--display);margin-top:4px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .ok{color:var(--mint)}.tile .bad{color:var(--rose)}
+.tile small{display:block;font:500 10px var(--body);color:var(--fog);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ═══ SQUADS & ACCOUNTS ═══ */
+.accs{display:grid;gap:12px;width:100%;}
+.sqsec{border:1px solid var(--edge);border-radius:var(--r-md);padding:12px;background:rgba(255,255,255,.02);display:grid;gap:10px;position:relative;overflow:hidden;width:100%;}
+.sqsec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--fog)}
+.sqsec.playing::before{background:var(--sky);box-shadow:0 0 10px var(--sky)}
+.sqsec.waiting::before{background:var(--ember)}
+
+.sqhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;width:100%;}
+.sqhead b{font:800 18px var(--display);letter-spacing:.5px}
+.sqbar{height:4px;border-radius:99px;background:rgba(0,0,0,.5);flex:1;min-width:60px;max-width:120px;overflow:hidden}
+.sqbar i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--sky));border-radius:99px}
+
+.acc{display:flex;flex-direction:column;gap:10px;background:rgba(0,0,0,.3);border:1px solid var(--edge);border-radius:var(--r-sm);padding:12px;width:100%;}
+.acc .nm{min-width:0;}
+.acc .nm b{display:block;font:700 14px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.acc .nm small{font:500 11px var(--mono);color:var(--fog)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{font:700 9px var(--body);padding:3px 8px;border-radius:4px;border:1px solid var(--edge);color:var(--fog);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.st-ONLINE,.sq-ready{color:var(--mint);border-color:rgba(0,240,160,.4);background:rgba(0,240,160,.1)}
+.st-IN_MATCH{color:var(--sky);border-color:rgba(0,210,255,.4);background:rgba(0,210,255,.1)}
+.st-RE_LOGIN,.st-CONNECTING{color:var(--ember);border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.1);animation:pulse 1.5s infinite}
+.sq-wait{color:var(--ember);border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.1)}
+.st-ERROR,.st-BANNED{color:var(--rose);border-color:rgba(255,71,87,.4);background:rgba(255,71,87,.1)}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;font:500 11px var(--body);color:var(--bone)}
+.meta i{font-style:normal;color:var(--fog)}
+.rl{font:500 11px var(--body);color:var(--fog)}
+.rl b{font-weight:700;color:var(--bone)}
+
+/* ═══ LOGS ═══ */
+.filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%;}
+.filters .f{padding:6px 10px;font-size:10px;border-radius:6px;background:rgba(255,255,255,.03);border:1px solid var(--edge);color:var(--fog);}
+.filters .f.on{background:var(--gold);color:#000;border-color:var(--gold);}
+.dbg{margin-left:auto;font:500 11px var(--body);color:var(--fog);display:flex;gap:6px;align-items:center;margin-top:4px;}
+.dbg input{accent-color:var(--gold);width:14px;height:14px;}
+.logs{margin-top:12px;max-height:300px;overflow:auto;background:#05060a;border:1px solid var(--edge);border-radius:var(--r-sm);padding:10px;font:11px/1.5 var(--mono);width:100%;}
+.log{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05);align-items:flex-start}
+.log .t{color:#4a5568;flex:none}
+.log .tag{flex:none;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;margin-top:2px}
+.log .m{word-break:break-word;min-width:0}
+.lv-success .m{color:var(--mint)}.lv-error .m{color:var(--rose)}.lv-warning .m{color:var(--ember)}.lv-info .m{color:#a0aec0}
+.tg-success{background:rgba(0,240,160,.1);color:var(--mint)}
+.tg-error{background:rgba(255,71,87,.1);color:var(--rose)}
+.tg-warning{background:rgba(255,107,53,.1);color:var(--ember)}
+.tg-info{background:rgba(160,174,192,.1);color:#a0aec0}
+.tg-relogin{background:rgba(179,98,255,.15);color:var(--violet)}
+
+/* ═══ DESKTOP OVERRIDES ═══ */
+@media(min-width:768px){
+ .topbar-in{padding:16px 24px;flex-wrap:nowrap;gap:24px;}
+ .brand b{font-size:26px;}
+ .hd-kpis{display:flex;}
+ .nav-wrapper{width:auto;margin-top:0;padding-bottom:0;overflow:visible;}
+ .main{padding:24px;gap:22px;}
+ .two{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:22px;}
+ .panel{padding:24px;}
+ .ph{flex-direction:row;align-items:flex-start;gap:14px;}
+ .ph h2{font-size:24px;}
+ .hero{padding:36px 40px 32px;}
+ .hero-guild img{width:80px;height:90px;}
+ .hg-name{font-size:36px;}
+ .hero-body{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;margin-top:32px;}
+ .score strong{font-size:clamp(60px,12vw,130px);}
+ .score small{font-size:14px;letter-spacing:2px;}
+ .gl-chip{padding:16px;}
+ .gl-chip b{font-size:24px;}
+ .gl-chart{padding:16px 20px 12px;}
+ #lgSpark{height:160px;}
+ .gt-row{grid-template-columns:36px 1fr auto;padding:10px 14px;}
+ .gt-rank{font-size:16px;}
+ .fields{grid-template-columns:1fr 150px;gap:16px;}
+ .stats{grid-template-columns:repeat(4,1fr);gap:10px;}
+ .tiles{grid-template-columns:repeat(8,minmax(0,1fr));gap:12px;}
+ .acc{display:grid;grid-template-columns:minmax(140px,1.2fr) 180px minmax(0,2fr) minmax(0,1.5fr);gap:16px;align-items:center;}
+ .dbg{margin-left:auto;margin-top:0;}
+ .filters .f{padding:8px 15px;font-size:12px;border-radius:99px;}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+ <div class="topbar-in">
+  <div class="brand">
+   <!-- Yahan logo ka naam aur fallback set hai -->
+   <img src="logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 44 50\'><path d=\'M22 2 40 9v14c0 12-8 21-18 25C12 44 4 35 4 23V9z\' fill=\'%231c1f2e\' stroke=\'%23ffc83d\' stroke-width=\'2.5\'/><path d=\'M12 22l4-8 6 5 6-5 4 8z\' fill=\'%23ffc83d\'/><rect x=\'12\' y=\'24\' width=\'20\' height=\'4\' rx=\'1\' fill=\'%23ff6b35\'/></svg>'"/>
+   <div class="text-box">
+    <b>MASTER OFC</b>
+    <span>GUILD GLORY</span>
+   </div>
+  </div>
+  
+  <div class="pill" id="statusPill" role="status" aria-live="polite">● READY</div>
+
+  <div class="hd-kpis">
+   <div class="hd-kpi"><b id="hdGlory">—</b><span>Glory</span></div>
+   <div class="hd-kpi"><b id="hdOnline">0/0</b><span>Online</span></div>
+   <div class="hd-kpi"><b id="hdUptime">0s</b><span>Uptime</span></div>
+  </div>
+
+  <div class="nav-wrapper">
+   <nav class="nav" aria-label="Sections">
+    <a href="#glorySec" class="on">Dashboard</a>
+    <a href="#control">Accounts</a>
+    <a href="#squads">Squads</a>
+    <a href="#log">Live Log</a>
+   </nav>
+  </div>
+ </div>
+</header>
+
+<main class="main">
+
+<section class="hero animate-in" id="glorySec" aria-label="Guild Glory">
+ <div class="hero-top">
+  <div class="hero-guild">
+   <!-- Hero section logo -->
+   <img src="logo.png" alt="Crest" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 44 50\'><path d=\'M22 2 40 9v14c0 12-8 21-18 25C12 44 4 35 4 23V9z\' fill=\'%231c1f2e\' stroke=\'%23ffc83d\' stroke-width=\'2.5\'/><path d=\'M12 22l4-8 6 5 6-5 4 8z\' fill=\'%23ffc83d\'/><rect x=\'12\' y=\'24\' width=\'20\' height=\'4\' rx=\'1\' fill=\'%23ff6b35\'/><path d=\'M22 30l3 5h-6z\' fill=\'%23ffc83d\'/></svg>'"/>
+   <div>
+    <div class="hg-name" id="hGuild">—</div>
+    <div class="hg-meta">
+     <span class="badge lv" id="hLevel">Level —</span>
+     <span class="badge rg" id="hRegion">—</span>
+    </div>
+   </div>
+  </div>
+  <span class="live">Live Data</span>
+ </div>
+ <div class="hero-body">
+  <div class="score">
+   <small>Guild Glory Score</small>
+   <strong id="lgGlory">—</strong>
+   <div class="score-sub" id="lgUpd">Waiting for game data…</div>
+  </div>
+  <div class="gl-chips">
+   <div class="gl-chip"><small>Gain this run</small><b id="lgSess" class="ok">+0</b></div>
+   <div class="gl-chip"><small>Total tracked</small><b id="lgTotal" class="ok">+0</b></div>
+   <div class="gl-chip"><small>Per hour</small><b id="lgHour">0</b></div>
+   <div class="gl-chip"><small>Online members</small><b id="lgOnline">—</b></div>
+  </div>
+ </div>
+ <div class="gl-chart">
+  <svg id="lgSpark" viewBox="0 0 600 150" preserveAspectRatio="none" role="img" aria-label="Glory graph"></svg>
+  <div class="gl-axis">
+   <span id="lgMin">—</span>
+   <span id="lgSpan">graph: waiting for data</span>
+   <span id="lgMax">—</span>
+  </div>
+ </div>
+ <div class="hint" id="lgNote" style="margin-top:12px"></div>
+ <div class="gl-top">
+  <div class="mlist-head">
+   <b>🏆 Top Glory Members</b>
+   <small id="lgTopNote"></small>
+  </div>
+  <div id="lgTop"><div class="empty">Waiting for member data…</div></div>
+ </div>
+</section>
+
+<section class="tiles animate-in" aria-label="Bot status">
+ <div class="tile"><span>Uptime</span><strong id="tUptime">0s</strong><small>since start</small></div>
+ <div class="tile"><span>Accounts</span><strong id="tAccs">0</strong><small id="tAccsSub">online 0</small></div>
+ <div class="tile"><span>In match</span><strong id="tActive">0</strong><small>active now</small></div>
+ <div class="tile"><span>Matches</span><strong id="tMatches">0</strong><small id="tStarted">started 0</small></div>
+ <div class="tile"><span>EXP gained</span><strong id="tExp">0</strong><small>total</small></div>
+ <div class="tile"><span>EXP / hour</span><strong id="tExpH">0</strong><small>avg speed</small></div>
+ <div class="tile"><span>Re-login</span><strong id="tRl"><span class="ok">0</span> / <span class="bad">0</span></strong><small id="tRlSub">ok / fail</small></div>
+ <div class="tile"><span>Last re-login</span><strong id="tRlLast">—</strong><small id="tRlWho">none yet</small></div>
+</section>
+
+<div class="two">
+<section class="panel gold animate-in" id="control">
+ <div class="ph">
+  <div>
+   <h2>Add Accounts</h2>
+   <p>One click: generate accounts, join guild &amp; start Glory. Old accounts keep running too.</p>
+  </div>
+ </div>
+ <ol class="steps" id="steps">
+  <li data-n="1">Generate</li>
+  <li data-n="2">Find Guild</li>
+  <li data-n="3">Join Request</li>
+  <li data-n="4">Start Glory</li>
+ </ol>
+ <div class="fields">
+  <div class="field"><label for="guildId">Guild ID</label><input id="guildId" placeholder="Enter guild ID" inputmode="numeric" autocomplete="off"/></div>
+  <div class="field"><label for="region">Region</label>
+   <select id="region"><option>IND</option><option>BD</option><option>SG</option><option>ID</option><option>ME</option><option>VN</option><option>BR</option><option>NA</option><option>PK</option><option>TH</option></select>
+  </div>
+ </div>
+ <div class="fields">
+  <div class="field"><label for="total">New accounts to generate</label><input id="total" type="number" min="1" max="500" value="5"/></div>
+  <div class="field"><label for="threads">Generator threads</label><input id="threads" type="number" min="1" max="30" value="5"/></div>
+ </div>
+ <div class="controls">
+  <label class="check">
+   <input id="fresh" type="checkbox" checked/>
+   <span>Fresh accounts.json pool
+    <small>Old accounts are not lost — they stay in archive. You can reactivate from "Old Accounts" below.</small>
+   </span>
+  </label>
+ </div>
+ <button id="start" type="button">Start Automation</button>
+ <div class="progress">
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="stage"><span id="stage">Ready</span><b id="percent">0%</b></div>
+ </div>
+ <div class="stats">
+  <div class="stat"><span>Generated</span><strong id="created">0</strong></div>
+  <div class="stat"><span>Join OK</span><strong id="joined">0</strong></div>
+  <div class="stat"><span>Join Fail</span><strong id="failed">0</strong></div>
+  <div class="stat"><span>Glory</span><strong id="glory">OFF</strong></div>
+ </div>
+</section>
+
+<section class="panel violet animate-in" id="guild">
+ <div class="ph">
+  <div>
+   <h2>Guild Information</h2>
+   <p>Guild data &amp; members load here automatically.</p>
+  </div>
+ </div>
+ <div class="ghead">
+  <div class="gicon">
+      <!-- Guild box logo -->
+      <img src="logo.png" alt="G" onerror="this.style.display='none';this.parentElement.innerHTML='🛡️'"/>
+  </div>
+  <div class="gtitle">
+   <small>Guild name</small>
+   <b id="gName">—</b>
+   <div class="badges" style="display:flex;gap:6px;margin-top:6px">
+    <span class="badge lv" id="gLevelBadge">Level —</span>
+    <span class="badge rg" id="gRegionBadge">—</span>
+   </div>
+  </div>
+ </div>
+ <div class="guild">
+  <div class="gbox"><small>Guild ID</small><div class="gid"><b id="gId">—</b><button class="copy" id="copyId" type="button">Copy</button></div></div>
+  <div class="gbox"><small>Region</small><b id="gRegion">—</b></div>
+  <div class="gbox"><small>Guild level</small><b id="gLevel">—</b></div>
+  <div class="gbox"><small>Members</small><b id="gMembers">—</b></div>
+  <div class="gbox"><small>Max members</small><b id="gMax">—</b></div>
+  <div class="gbox"><small>Free slots</small><b id="gFree">—</b></div>
+ </div>
+ <div class="mem">
+  <div class="row"><span>Guild capacity</span><b id="gMemText">—</b></div>
+  <div class="bar"><div class="fill" id="gMemFill"></div></div>
+ </div>
+ <div class="extra" id="gExtra"></div>
+ <div class="gupd" style="margin-top:10px;font-size:11px;color:var(--fog);text-align:right" id="gUpd"></div>
+ <div class="notice" style="display:none;margin-top:12px;font-size:13px;background:rgba(0,0,0,.3);border:1px dashed var(--edge);border-radius:8px;padding:10px" id="gNotice"></div>
+ <div class="mlist-head" style="margin-top:20px"><b>Guild Members</b><small id="mCount"></small></div>
+ <div class="mlist" style="margin-top:12px;max-height:320px;overflow:auto;display:grid;gap:10px;padding-right:4px" id="mList"><div class="empty">Waiting for live member list…</div></div>
+</section>
+</div>
+
+<section class="panel sky animate-in" id="squads">
+ <div class="ph">
+  <div>
+   <h2>Squads &amp; Accounts</h2>
+   <p>Every 4 accounts form a squad. On token expiry, accounts auto re-login &amp; keep playing.</p>
+  </div>
+ </div>
+ <div class="accs" id="accs"><div class="empty">Accounts not loaded yet…</div></div>
+ <div id="banned"></div>
+ <div id="oldAcc"></div>
+</section>
+
+<section class="panel fog animate-in" id="log">
+ <div class="ph">
+  <div>
+   <h2>Live Activity Log</h2>
+   <p>Newest event on top. Green = success, amber = warning, red = error, purple = re-login.</p>
+  </div>
+  <span class="live">Live</span>
+ </div>
+ <div class="filters">
+  <button class="f on" data-f="all" type="button">All</button>
+  <button class="f" data-f="success" type="button">✅ Success</button>
+  <button class="f" data-f="warning" type="button">⚠ Warning</button>
+  <button class="f" data-f="error" type="button">❌ Error</button>
+  <button class="f" data-f="relogin" type="button">🔄 Re-login</button>
+ </div>
+ <div style="display:flex;justify-content:flex-end;margin-top:8px"><label class="dbg"><input id="hideDbg" type="checkbox" checked/> Hide debug lines</label></div>
+ <div class="logs" id="logs"><div class="muted" style="padding:10px">Waiting for automation logs…</div></div>
+</section>
+
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const num=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+const fmtN=v=>{const n=num(v);return n===null?String(v??'0'):n.toLocaleString()};
+function fmtDur(sec){sec=Math.max(0,Math.floor(sec||0));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${h}h ${m}m`:(m?`${m}m ${s}s`:`${s}s`)}
+const SKIP=new Set(['guildname','guildregion','maxmembers','guildlevel','guildid','guild_id','region','guild_name','guild_region','max_members','guild_level','current_members','updated_at','details','status','raw']);
+const pretty=k=>String(k).replace(/_/g,' ').replace(/([a-z])([A-Z])/g,'$1 $2').replace(/\b\w/g,c=>c.toUpperCase());
+
+window.addEventListener('scroll',()=>{$('topbar').classList.toggle('scrolled',window.scrollY>10)});
+
+function renderGuild(g){
+ if(!g)return;
+ const name=g.guild_name||'—',lvl=g.guild_level??'—',reg=g.guild_region||g.region||'—';
+ $('gName').textContent=name;$('hGuild').textContent=name;
+ $('hLevel').textContent='Level '+lvl;$('hRegion').textContent=reg;
+ $('gId').textContent=g.guild_id||'—';$('gRegion').textContent=reg;$('gLevel').textContent=lvl;
+ $('gLevelBadge').textContent='Level '+lvl;$('gRegionBadge').textContent=reg;
+ const curRaw=g.current_members??g.members,maxRaw=g.max_members,cur=num(curRaw),max=num(maxRaw);
+ $('gMembers').textContent=curRaw??'—';$('gMax').textContent=maxRaw??'—';
+ if(cur!==null&&max!==null&&max>0){
+  const p=Math.min(100,Math.round(cur/max*100));
+  $('gFree').textContent=Math.max(0,max-cur);
+  $('gMemText').textContent=`${cur} / ${max} (${p}%)`;
+  $('gMemFill').style.width=p+'%';
+ }else{
+  $('gFree').textContent='—';
+  $('gMemText').textContent=max!==null?`? / ${max}`:'—';
+  $('gMemFill').style.width='0%';
+ }
+ const det=g.details||{};
+ const items=Object.entries(det).filter(([k,v])=>!SKIP.has(String(k).toLowerCase())&&v!==''&&v!==null&&String(v).length<80).slice(0,12);
+ $('gExtra').innerHTML=items.map(([k,v])=>`<div class="gbox"><small>${esc(pretty(k))}</small><b>${esc(typeof v==='number'?v.toLocaleString():v)}</b></div>`).join('');
+ $('gUpd').textContent=g.updated_at?('Last updated: '+new Date(g.updated_at*1000).toLocaleTimeString()):'';
+}
+
+$('copyId').onclick=()=>{
+ const v=$('gId').textContent;
+ if(v&&v!=='—'&&navigator.clipboard){
+  navigator.clipboard.writeText(v);
+  $('copyId').textContent='Copied ✓';
+  setTimeout(()=>$('copyId').textContent='Copy',1200);
+ }
+};
+
+function relAge(ts){if(!ts)return '—';const d=Math.max(0,Math.floor(Date.now()/1000-ts));return d<5?'just now':(d<60?d+'s ago':Math.floor(d/60)+'m ago')}
+const sgn=n=>{n=Number(n)||0;return (n>=0?'+':'')+n.toLocaleString()};
+
+function animNum(el,to){
+ const from=el._v==null?to:el._v;
+ el._v=to;
+ if(typeof requestAnimationFrame!=='function'||from===to){el.textContent=fmtN(to);return}
+ const t0=Date.now(),dur=800;
+ (function step(){
+  const k=Math.min(1,(Date.now()-t0)/dur),e=1-Math.pow(1-k,3);
+  el.textContent=fmtN(Math.round(from+(to-from)*e));
+  if(k<1&&el._v===to)requestAnimationFrame(step);
+ })();
+}
+
+function spark(h){
+ const el=$('lgSpark');
+ if(!h||h.length<2){
+  el.innerHTML='';$('lgMin').textContent='—';$('lgMax').textContent='—';$('lgSpan').textContent='graph: waiting for data';
+  return;
+ }
+ const ys=h.map(x=>x[1]),mn=Math.min(...ys),mx=Math.max(...ys),rg=Math.max(1,mx-mn),n=h.length;
+ const up=ys[n-1]>=ys[0],col=up?'#00f0a0':'#ff4757';
+ const X=i=>(i/(n-1)*590+5),Y=v=>(138-((v-mn)/rg)*118);
+ const line=h.map((x,i)=>`${X(i).toFixed(1)},${Y(x[1]).toFixed(1)}`).join(' ');
+ const area=`M${X(0).toFixed(1)},148 L${line.split(' ').join(' L')} L${X(n-1).toFixed(1)},148 Z`;
+ el.innerHTML=
+  `<defs><linearGradient id="lgGrad" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="${col}" stop-opacity=".4"/>
+   <stop offset="1" stop-color="${col}" stop-opacity="0"/>
+  </linearGradient></defs>`
+  +[30,80,130].map(y=>`<line x1="0" x2="600" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.06)" vector-effect="non-scaling-stroke"/>`).join('')
+  +`<path d="${area}" fill="url(#lgGrad)"/>`
+  +`<polyline fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke" points="${line}"/>`
+  +`<line x1="${X(n-1).toFixed(1)}" x2="${(X(n-1)+.01).toFixed(1)}" y1="${Y(ys[n-1]).toFixed(1)}" y2="${Y(ys[n-1]).toFixed(1)}" stroke="${col}" stroke-width="12" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+ $('lgMin').textContent='low '+fmtN(mn);
+ $('lgMax').textContent='high '+fmtN(mx);
+ $('lgSpan').textContent='last '+fmtDur(h[n-1][0]-h[0][0])+' graph';
+}
+
+function renderTop(ms){
+ const top=(ms||[]).slice().sort((a,b)=>(b.score||0)-(a.score||0)).slice(0,5);
+ const mx=Math.max(1,...top.map(m=>m.score||0));
+ const medal=['🥇','🥈','🥉','4','5'];
+ $('lgTopNote').textContent=top.length?`Top ${top.length} of ${(ms||[]).length} members`:'';
+ $('lgTop').innerHTML=top.length?top.map((m,i)=>`
+  <div class="gt-row">
+   <div class="gt-rank">${medal[i]}</div>
+   <div>
+    <div class="gt-name">${esc(m.name)}${m.is_leader?'<span class="mtag l" style="background:var(--gold);color:#000;padding:2px 6px;border-radius:4px;font-size:9px;margin-left:4px">LEADER</span>':''}${m.is_ours?'<span class="mtag o" style="background:var(--sky);color:#000;padding:2px 6px;border-radius:4px;font-size:9px;margin-left:4px">OUR BOT</span>':''}</div>
+    <div class="gt-bar"><i style="width:${Math.round((m.score||0)/mx*100)}%"></i></div>
+   </div>
+   <div class="gt-val">${fmtN(m.score||0)}</div>
+  </div>`).join(''):'<div class="empty">Game has not sent member glory data yet.</div>';
+}
+
+function renderLive(g){
+ if(!g||!g.glory){
+  $('lgGlory').textContent='—';$('hdGlory').textContent='—';$('lgGlory')._v=null;
+  $('lgUpd').textContent='Waiting for game data…';
+  $('lgNote').textContent=(g&&g.error)?('⚠ '+g.error):'Select a guild and start Glory — live glory will appear here.';
+  $('mList').innerHTML='<div class="empty">Waiting for live member list…</div>';
+  $('mCount').textContent='';spark(null);renderTop([]);
+  return;
+ }
+ animNum($('lgGlory'),Number(g.glory));
+ $('hdGlory').textContent=fmtN(g.glory);
+ const se=$('lgSess'),to=$('lgTotal');
+ se.textContent=sgn(g.gained_session);to.textContent=sgn(g.gained_total);
+ se.className=(g.gained_session||0)>=0?'ok':'bad';
+ to.className=(g.gained_total||0)>=0?'ok':'bad';
+ $('lgHour').textContent=fmtN(g.per_hour||0);
+ $('lgOnline').textContent=(g.members_online!=null&&g.total_members!=null)?`${g.members_online} / ${g.total_members}`:'—';
+ $('lgUpd').textContent='updated '+relAge(g.updated_at)+' • every '+(g.interval||30)+'s';
+ $('lgNote').textContent=g.ok===false?('⚠ Last update failed: '+g.error+' (showing old data)'):'';
+ spark(g.history);
+ const nt=$('gNotice');
+ if(g.notice){nt.style.display='block';nt.textContent='📢 '+g.notice}else{nt.style.display='none'}
+ const ms=g.members||[];
+ renderTop(ms);
+ $('mCount').textContent=ms.length?`${ms.length} members listed`:'';
+ $('mList').innerHTML=ms.length?ms.map(m=>{
+  return `<div class="mrow${m.is_ours?' ours':''}${m.is_leader?' lead':''}" style="display:flex;gap:10px;align-items:center;background:rgba(0,0,0,.3);padding:10px;border-radius:8px;border:1px solid var(--edge);width:100%;${m.is_leader?'border-color:rgba(255,200,61,.4)':''}${m.is_ours?'background:rgba(0,210,255,.05)':''}">
+   <div class="mav" style="width:32px;height:32px;flex:none;border-radius:6px;display:grid;place-items:center;background:var(--raised);border:1px solid var(--edge);font-size:14px">${m.is_leader?'👑':(m.is_ours?'🤖':'🧑')}</div>
+   <div class="mi" style="flex:1;min-width:0">
+    <b style="font-size:13px;display:flex;gap:6px;align-items:center">${esc(m.name)}${m.is_leader?'<span class="mtag l" style="background:rgba(255,200,61,.2);color:var(--gold);padding:2px 6px;border-radius:4px;font-size:9px">LEADER</span>':''}${m.is_ours?'<span class="mtag o" style="background:rgba(0,210,255,.2);color:var(--sky);padding:2px 6px;border-radius:4px;font-size:9px">BOT</span>':''}</b>
+    <small style="display:block;font-size:10px;color:var(--fog);margin-top:2px">Lv ${esc(m.level)} • Glory ${fmtN(m.score)} • UID ${esc(m.uid)}</small>
+   </div>
+  </div>`;
+ }).join(''):'<div class="empty">Game has not sent member list.</div>';
+}
+
+let oldMsgText='',oldMsgAt=0;
+function renderOld(d){
+ const o=d.old_accounts||{},n=o.inactive_count||0,list=o.inactive||[],box=$('oldAcc');
+ let h='';
+ if(o.total){
+  h=`<div class="old-box" style="margin-top:16px;border:1px dashed rgba(179,98,255,.5);border-radius:12px;padding:14px;background:rgba(179,98,255,.05);width:100%">
+   <div class="old-head" style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><b style="font-size:15px">📦 Old Accounts</b>
+    <span class="muted" style="font-size:11px">${o.total} saved • ${n} inactive${o.banned?` • ${o.banned} banned (no retry)`:''}</span>
+   </div>`
+   +(n?
+    `<div class="muted" style="font-size:11px;margin-top:8px">These accounts are auto-saved (survive fresh pool). Activate them to join squads and start working.</div>
+     <div class="old-list" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${list.slice(0,24).map(u=>`<button class="f" data-old="${esc(u)}" type="button" style="padding:6px 10px;font-size:10px;border-radius:4px;background:rgba(0,0,0,.3);border:1px solid var(--edge);color:#fff">▶ ${esc(u)}</button>`).join('')}${n>24?`<span class="muted" style="padding:6px">+${n-24} more</span>`:''}</div>
+     <button class="old-all" id="oldAll" type="button" style="margin-top:12px;padding:10px 14px;border-radius:6px;font-weight:700;font-size:12px;background:linear-gradient(135deg,var(--violet),var(--sky));color:#000;width:100%">▶ Activate all ${n} old accounts</button>`
+    :'<div class="empty" style="margin-top:12px">All old accounts are running ✓</div>')
+   +`<div class="hint" style="margin-top:8px;font-size:11px;color:var(--mint)">${(oldMsgText&&Date.now()-oldMsgAt<20000)?esc(oldMsgText):''}</div>
+  </div>`;
+ }
+ if(box._h!==h){box._h=h;box.innerHTML=h}
+}
+
+$('oldAcc').onclick=async e=>{
+ const t=(e.target&&e.target.closest)?e.target.closest('button'):null;
+ if(!t)return;
+ let body=null;
+ if(t.id==='oldAll'){if(typeof confirm==='function'&&!confirm('Activate all old accounts?'))return;body={all:true}}
+ else if(t.dataset&&t.dataset.old){body={uids:[t.dataset.old]}}
+ else return;
+ t.disabled=true;
+ try{
+  const r=await fetch('/api/accounts/old/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const j=await r.json();
+  oldMsgText=j.message||j.error||'Done';
+ }catch(err){oldMsgText='Server connection failed'}
+ oldMsgAt=Date.now();$('oldAcc')._h=null;pollStats();
+};
+
+function renderBanned(d){
+ const bn=d.banned||[];
+ $('banned').innerHTML=bn.length?
+  `<div style="margin-top:16px;font-size:16px;font-weight:800;color:var(--rose);font-family:var(--display)">🚫 Banned Accounts (${bn.length}) — no login retry</div>`+
+  bn.map(b=>`<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;background:rgba(255,71,87,.05);border:1px solid rgba(255,71,87,.3);border-left:3px solid var(--rose);border-radius:6px;padding:10px 12px;font-size:12px;width:100%">
+   <b>${esc(b.key)}</b>
+   <span class="chip st-BANNED" style="background:var(--rose);color:#fff;border:none">${esc(b.reason||'BANNED')}</span>
+   <span class="muted">${b.account_id?('ID '+esc(b.account_id)+' • '):''}${b.found_at?esc(new Date(b.found_at*1000).toLocaleString()):''}</span>
+  </div>`).join(''):'';
+}
+
+function pct(a){
+ if(a.stage==='generating')return Math.min(45,Math.round((a.created/Math.max(1,a.target))*45));
+ if(a.stage==='guild')return 55;
+ if(a.stage==='joining')return Math.min(90,55+Math.round((a.joined+a.failed)/Math.max(1,a.target)*35));
+ if(a.stage==='starting')return 96;
+ if(a.stage==='done')return 100;
+ return 0;
+}
+
+async function poll(){
+ try{
+  const r=await fetch('/api/automation');
+  const d=await r.json();
+  const a=d.automation||{};
+  let p=pct(a);
+  renderSteps(a);
+  $('fill').style.width=p+'%';
+  $('percent').textContent=p+'%';
+  $('stage').textContent=a.message||a.stage||'Ready';
+  $('created').textContent=a.created||0;
+  $('joined').textContent=a.joined||0;
+  $('failed').textContent=a.failed||0;
+  $('glory').textContent=d.glory_started?'ON':'OFF';
+  const sp=$('statusPill');
+  sp.textContent=a.running?'● RUNNING':(a.stage==='error'?'● ERROR':(d.glory_started?'● ONLINE':'● READY'));
+  sp.className='pill'+(a.running?' on':(a.stage==='error'?' err':(d.glory_started?' on':'')));
+  renderGuild(d.guild);
+  renderLive(d.guild_live);
+  $('start').disabled=!!a.running;
+ }catch(e){}
+}
+
+let filt='all',lastLogs=[];
+
+function renderOverview(d){
+ const accs=d.accounts||[],rl=d.relogins||{};
+ const online=accs.filter(a=>a.status==='ONLINE'||a.status==='IN_MATCH').length;
+ $('tUptime').textContent=fmtDur(d.uptime);
+ $('hdUptime').textContent=fmtDur(d.uptime);
+ $('hdOnline').textContent=online+'/'+(d.total_accounts??accs.length);
+ $('tAccs').textContent=d.total_accounts??accs.length;
+ $('tAccsSub').textContent=`online ${online}`+((d.banned||[]).length?` • banned ${(d.banned||[]).length}`:'');
+ $('tActive').textContent=d.total_active_matches??0;
+ $('tMatches').textContent=fmtN(d.total_matches);
+ $('tStarted').textContent='started '+fmtN(d.total_matches_started);
+ $('tExp').textContent=fmtN(d.total_gained_exp);
+ $('tExpH').textContent=fmtN(d.exp_per_hour);
+ let ok=0,bad=0,last=null,who='';
+ for(const [u,e] of Object.entries(rl)){
+  ok+=e.ok||0;bad+=e.fail||0;
+  if(e.last_time&&(!last||e.last_time>=last)){
+   last=e.last_time;
+   const a=accs.find(x=>String(x.uid)===String(u));
+   who=(a&&a.nickname)||u;
+  }
+ }
+ $('tRl').innerHTML=`<span class="ok">${ok}</span> / <span class="bad">${bad}</span>`;
+ $('tRlLast').textContent=last||'—';
+ $('tRlWho').textContent=last?who:'none yet';
+}
+
+function accRow(a,rl){
+ const st=String(a.status||'ONLINE');
+ const cls='st-'+st.replace(/[^A-Za-z]/g,'_').toUpperCase();
+ const e=rl[String(a.uid)];
+ let r='<span class="muted">Re-login: none yet</span>';
+ if(e){
+  const c=e.last_status==='OK'?'ok':(e.last_status==='FAILED'?'bad':'warn');
+  const t=e.last_status==='OK'?'✓ back online':(e.last_status==='FAILED'?'✗ failed':'⟳ running');
+  r=`<b>🔄 ${e.count}x</b> <span class="muted">(✓${e.ok} ✗${e.fail})</span> • <span class="${c}">${t}</span> <span class="muted">${esc(e.last_time||'')}</span>`;
+ }
+ return `<div class="acc">
+  <div class="nm"><b>${esc(a.nickname||a.uid)}</b><small>UID ${esc(a.uid)} • ${esc(a.region||'')}</small></div>
+  <div class="chips">
+   <span class="chip ${cls}">${esc(st.replace('_',' '))}</span>
+   ${a.spectating?'<span class="chip sq-wait" title="Out, teammates still in match — spectating">👁 SPECTATE</span>':''}
+  </div>
+  <div class="meta">
+   <span><i>Lv</i> ${esc(a.level??'-')}</span>
+   <span><i>EXP</i> +${fmtN(a.gained_exp||0)}</span>
+   <span><i>Matches</i> ${fmtN(a.matches_played||0)}${a.active_matches?` (${a.active_matches} live)`:''}</span>
+   <span><i>Uptime</i> ${fmtDur(a.uptime_seconds)}</span>
+  </div>
+  <div class="rl">${r}</div>
+ </div>`;
+}
+
+function renderAccounts(d){
+ const accs=d.accounts||[],rl=d.relogins||{},sq=d.squads||{};
+ if(!accs.length&&!Object.keys(sq).length){
+  $('accs').innerHTML='<div class="empty">No accounts online yet.</div>';return;
+ }
+ const groups={};
+ accs.forEach(a=>{const k=a.squad?String(a.squad):'0';(groups[k]=groups[k]||[]).push(a)});
+ Object.keys(sq).forEach(k=>{groups[k]=groups[k]||[]});
+ const keys=Object.keys(groups).sort((x,y)=>(+x||999)-(+y||999));
+ $('accs').innerHTML=keys.map(k=>{
+  const arr=groups[k],info=sq[k]||{},size=info.size||4;
+  const reg=(info.registered!=null)?info.registered:arr.length;
+  const playing=!!info.playing||arr.some(a=>a.status==='IN_MATCH');
+  const full=reg>=size;
+  let state,cls,box;
+  if(k==='0'){state='⏳ Assigning squad';cls='sq-wait';box='waiting'}
+  else if(playing){state='🎮 In match';cls='st-IN_MATCH';box='playing'}
+  else if(!full){state=`⏳ Not full — ${reg}/${size} (${size-reg} slots free)`;cls='sq-wait';box='waiting'}
+  else{state='🤝 Forming team';cls='sq-ready';box=''}
+  const pctv=Math.min(100,Math.round(reg/size*100));
+  return `<div class="sqsec ${box}">
+   <div class="sqhead">
+    <b>${k==='0'?'Squad —':'Squad '+esc(k)}</b>
+    <span class="chip ${cls}">${state}</span>
+    ${k==='0'?'':`<div class="sqbar"><i style="width:${pctv}%"></i></div><span class="muted" style="font-size:11px">${reg}/${size} accounts • ${arr.length} online</span>`}
+    ${info.stage?`<div class="muted" style="font-size:11px;width:100%;margin-top:4px">🧭 ${esc(info.stage)}${info.stage_age>=15?` (${info.stage_age}s same stage)`:''}</div>`:''}
+   </div>
+   ${arr.length?arr.slice(0,40).map(a=>accRow(a,rl)).join(''):'<div class="empty">Squad accounts logging in…</div>'}
+  </div>`;
+ }).join('');
+}
+
+function renderLogs(){
+ const hide=$('hideDbg').checked;
+ let arr=lastLogs.filter(x=>x&&typeof x==='object');
+ if(hide)arr=arr.filter(x=>!/^\[RAW-IN/.test(String(x.message||'')));
+ if(filt!=='all')arr=arr.filter(x=>filt==='relogin'?/re-?login/i.test(String(x.message||'')):(x.level===filt));
+ const box=$('logs');
+ const keep=box.scrollTop;
+ box.innerHTML=arr.slice(-150).reverse().map(x=>{
+  const lv=['success','error','warning'].includes(x.level)?x.level:'info';
+  const re=/re-?login/i.test(String(x.message||''));
+  return `<div class="log lv-${lv}">
+   <span class="t">${esc(x.time||'')}</span>
+   <span class="tag ${re?'tg-relogin':'tg-'+lv}">${re?'RE-LOGIN':lv.toUpperCase()}</span>
+   <span class="m">${esc(x.message||'')}</span>
+  </div>`;
+ }).join('')||'<div class="muted" style="padding:10px">No logs for this filter yet.</div>';
+ box.scrollTop=keep;
+}
+
+async function pollStats(){
+ try{
+  const r=await fetch('/api/stats?logs=200');
+  const d=await r.json();
+  renderOverview(d);
+  renderAccounts(d);
+  renderBanned(d);
+  renderOld(d);
+  lastLogs=d.logs||[];
+  renderLogs();
+ }catch(e){}
+}
+
+document.querySelectorAll('.f').forEach(b=>b.onclick=()=>{
+ filt=b.dataset.f;
+ document.querySelectorAll('.f').forEach(x=>x.classList.toggle('on',x===b));
+ renderLogs();
+});
+$('hideDbg').onchange=renderLogs;
+
+$('start').onclick=async()=>{
+ const guild_id=$('guildId').value.trim(),region=$('region').value;
+ const total=Number($('total').value),threads=Number($('threads').value),fresh=$('fresh').checked;
+ if(!guild_id)return alert('Please enter a Guild ID');
+ $('start').disabled=true;
+ try{
+  const r=await fetch('/api/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({guild_id,region,total_accounts:total,threads,fresh_pool:fresh})});
+  const d=await r.json();
+  if(!r.ok)alert(d.error||'Start failed');
+ }catch(e){alert('Server connection failed')}
+};
+
+setInterval(poll,1000);setInterval(pollStats,2000);poll();pollStats();
+
+function renderSteps(a){
+ const li=document.querySelectorAll('#steps li');
+ if(!li.length)return;
+ const order=['generating','guild','joining','starting'],idx=order.indexOf(a.stage),done=a.stage==='done';
+ li.forEach((el,i)=>{el.className=done||(idx>-1&&i<idx)?'done':(i===idx?(a.running?'now':''):'')});
+ if(a.stage==='error'){li.forEach(el=>{if(el.className==='now')el.className='err'})}
+}
+
+(function(){
+ const links=[].slice.call(document.querySelectorAll('.nav a'));
+ if(!links.length||typeof IntersectionObserver==='undefined')return;
+ const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-35% 0px -60% 0px'});
+ links.forEach(l=>{const el=document.getElementById(l.getAttribute('href').slice(1));if(el)io.observe(el)});
+})();
+</script>
+</body>
+</html>
